@@ -1,0 +1,57 @@
+const UserModel = require("../models/UserModel");
+
+exports.addUser = (req, res) => {
+  const user = new UserModel({
+    fname: req.body.fname,
+    lname: req.body.lname,
+    email: req.body.email,
+    age: req.body.age,
+  })
+
+  user
+    .save()
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+};
+
+exports.getUsers= (req, res) => {
+    const user = UserModel.find()
+    user
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((error) => {
+        res.send(error);
+      })
+  }
+
+//Q1 : getByName
+exports.getUserByName= (req, res) => {
+    const user = UserModel.find({fname:req.params.fname})
+    user
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((error) => {
+        res.send(error);
+      })
+  }
+
+//Q2 : show custom fields (q2)
+exports.getNameAndAge= (req, res) => {
+    const user = UserModel.find({},{fname:1,age:1})
+    user
+      .then((data) => {
+        res.status(200).json({
+            message:"Successgully got name and age",
+            data:data,
+        })
+      })
+      .catch((error) => {
+        res.send(error);
+      })
+  }
