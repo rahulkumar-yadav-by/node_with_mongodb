@@ -1,5 +1,7 @@
 const UserModel = require("../models/UserModel");
 
+
+//Add User
 exports.addUser = (req, res) => {
   const user = new UserModel({
     fname: req.body.fname,
@@ -18,6 +20,8 @@ exports.addUser = (req, res) => {
     });
 };
 
+
+//GetUsers
 exports.getUsers= (req, res) => {
     const user = UserModel.find()
     user
@@ -29,7 +33,7 @@ exports.getUsers= (req, res) => {
       })
   }
 
-//Q1 : getByName
+// getUsersByName
 exports.getUserByName= (req, res) => {
     const user = UserModel.find({fname:req.params.fname})
     user
@@ -41,7 +45,7 @@ exports.getUserByName= (req, res) => {
       })
   }
 
-//Q2 : show custom fields (q2)
+//show custom fields Of Users
 exports.getNameAndAge= (req, res) => {
     const user = UserModel.find({},{fname:1,age:1})
     user
@@ -55,3 +59,41 @@ exports.getNameAndAge= (req, res) => {
         res.send(error);
       })
   }
+
+// udate Age by Name
+exports.updateAgeByname=(req,res)=>{
+    /* UserModel.findOne({fname:"Kalyan"},(error,user)=>{        =>    giving name here only */
+    UserModel.findOne({fname:req.params.fname},(error,user)=>{       //giving name through postman request 
+        if(error) res.send(error)
+        user.age=req.body.age ? req.body.age: user.age
+        user.save((error)=>{
+            if(error) res.send(error)
+            res.status(200).json({
+                message:"Successfully got the name and age",
+                data:user
+            })
+        })
+    })
+}
+
+
+
+// Increment Age by name
+exports.updateAgeByName2 = (req,res) => {
+    UserModel.updateOne({fname:"Rahul"}, { $inc : {age : 25}}, (data) => {
+        res.status(200).json({
+            message : "successfully updated Rahul's Age",
+            data : data
+        })
+    })
+}
+
+// deleteUser by name
+
+exports.deleteByName = (req,res) => {
+    UserModel.deleteOne({fname:req.params.fname}, () => {
+        res.status(200).json({
+            message : "Successfully Deleted "+req.params.fname+"'s Data"
+        })
+    })
+}
